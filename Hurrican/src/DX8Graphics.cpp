@@ -901,8 +901,27 @@ void DirectGraphicsClass::SetupFramebuffers() {
     } else {
         glViewport(WindowView.x, WindowView.y, WindowView.w, WindowView.h); /* Setup our viewport. */
     }
+    matProjWindow = glm::ortho(0.0f, static_cast<float>(WindowView.w), static_cast<float>(WindowView.h), 0.0f, 0.0f, 1.0f);
+
     Protokoll << "Window viewport: " << WindowView.w << "x" << WindowView.h << " at " << WindowView.x << "x"
               << WindowView.y << std::endl;
+}
+
+void DirectGraphicsClass::ToggleFullscreen() {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    if (Window != nullptr) {
+        uint32_t current_flags = SDL_GetWindowFlags(Window);
+        bool isFull = (current_flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) != 0;
+        if (isFull) {
+            SDL_SetWindowFullscreen(Window, 0);
+            CommandLineParams.RunWindowMode = ScreenMode::WINDOW;
+        } else {
+            SDL_SetWindowFullscreen(Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+            CommandLineParams.RunWindowMode = ScreenMode::FULLSCREEN;
+        }
+        SetupFramebuffers();
+    }
+#endif
 }
 
 void DirectGraphicsClass::ClearBackBuffer() {

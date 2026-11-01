@@ -128,6 +128,7 @@ class DirectGraphicsClass {
     void SetTexture(int idx);
     bool ExtensionSupported(const char *ext);
     void SetupFramebuffers();
+    void ToggleFullscreen();
     void ClearBackBuffer();
 #if (defined(USE_GL2) || defined(USE_GL3)) && defined(USE_FBO)
     void SelectBuffer(bool active);

@@ -418,6 +418,19 @@ int main(int argc, char *argv[]) {
                         Protokoll << "\n-> Input Initialization Failure ...!\n";
                     }
                     break;
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED ||
+                        event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                        DirectGraphics.SetupFramebuffers();
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    if ((event.key.keysym.sym == SDLK_RETURN && (event.key.keysym.mod & KMOD_ALT)) ||
+                        (event.key.keysym.sym == SDLK_f && (event.key.keysym.mod & KMOD_GUI)) ||
+                        event.key.keysym.sym == SDLK_F11) {
+                        DirectGraphics.ToggleFullscreen();
+                    }
+                    break;
                 default:
                     break;
             }
