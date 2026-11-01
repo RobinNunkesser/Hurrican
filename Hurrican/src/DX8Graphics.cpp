@@ -150,7 +150,9 @@ bool DirectGraphicsClass::Init(std::uint32_t dwBreite, std::uint32_t dwHoehe, st
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #else
+#if !defined(__APPLE__)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
 #endif /* defined(USE_GLES1) */
 #endif /* SDL_VERSION_ATLEAST(2,0,0) */
 #endif // !EGL
@@ -361,7 +363,7 @@ bool DirectGraphicsClass::SetDeviceInfo() {
     Protokoll << "GL_SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 #endif
     glextensions = reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS));
-    Protokoll << "GL_EXTENSIONS: " << glextensions << std::endl;
+    Protokoll << "GL_EXTENSIONS: " << (glextensions ? glextensions : "(core profile)") << std::endl;
 
 #if defined(USE_ETC1)
     SupportedETC1 = ExtensionSupported("GL_OES_compressed_ETC1_RGB8_texture");
@@ -666,7 +668,7 @@ void DirectGraphicsClass::DisplayBuffer() {
 }
 
 bool DirectGraphicsClass::ExtensionSupported(const char *ext) {
-    if (strstr(glextensions, ext) != nullptr) {
+    if (glextensions != nullptr && strstr(glextensions, ext) != nullptr) {
         Protokoll << ext << " is supported" << std::endl;
         return true;
     }
